@@ -4,6 +4,18 @@ import 'models/recipe.dart';
 import 'providers/recipe_provider.dart';
 import 'package:provider/provider.dart';
 
+/*
+requirement: 
+- user auth
+
+Objects:
+- recipes: List Recipe
+
+methods:
+- get user recipes
+- add/remove cart
+*/ 
+
 class UserRecipes extends StatefulWidget {
   const UserRecipes({Key? key}) : super(key: key);
 
