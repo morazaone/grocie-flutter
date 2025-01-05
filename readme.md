@@ -1,4 +1,20 @@
-Download and install the following packages.
+# Welcome,
 
-Xcode 16 to debug and compile native Swift or ObjectiveC code. The Xcode installation includes Git 2.27 or later to manage source code.
-CocoaPods 1.16 to compile and enable Flutter plugins in your native apps.
+### Overview:
+This repo contains the Flutter code for Grocie app.
+
+live website: [grocie.solucion.one](https://grocie.solucion.one/)
+
+## Tech Compatibiliy
+Supabase: Database
+
+## Main Code:
+[/lib](https://github.com/morazaone/grocie-flutter/tree/master/lib)
+
+
+## version Compatibility:
+Xcode 16  
+CocoaPods 1.16 
+
+### questions?
+ reach out: [@morazaone](https://x.com/morazaone)
