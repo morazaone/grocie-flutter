@@ -8,17 +8,24 @@ class RecipeProvider extends ChangeNotifier {
 
   Future<void> fetchUserRecipes() async {
     final supabase = Supabase.instance.client;
-    final response = await supabase.from('test').select().eq('id', '1');
+    final response = await supabase
+        .from('recipes')
+        .select()
+        .eq('author_id', '582e25d5-e022-4729-8052-39d598291f00');
 
-    // _recipes = (response as List<dynamic>)
-    //     .map((recipeData) => Recipe(
-    //           id: recipeData['recipe_id'],
-    //           title: recipeData['title'],
-    //           toPick: recipeData['toPick'] ?? false,
-    //         ))
-    //     .toList();
+    _recipes = (response as List<dynamic>)
+        .map((recipeData) => Recipe(
+              id: recipeData['recipe_id'],
+              title: recipeData['title'],
+              toPick: recipeData['toPick'] ?? false,
+            ))
+        .toList();
 
-    print(response);
+    // Print each recipe individually
+    for (var recipe in _recipes) {
+      print(
+          'Recipe: ${recipe.id} - ${recipe.title} (To Pick: ${recipe.toPick})');
+    }
     notifyListeners();
   }
 
