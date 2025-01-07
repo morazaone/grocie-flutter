@@ -5,11 +5,13 @@ import 'services/supabase_service.dart';
 import 'user_recipes.dart';
 import 'package:provider/provider.dart';
 import 'providers/recipe_provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 void main() async {
+  await dotenv.load();
   WidgetsFlutterBinding.ensureInitialized();
-  final supabaseService = SupabaseService();
-  await supabaseService.initialize();
+  // final supabaseService = SupabaseService();
+  // await supabaseService.initialize();
   runApp(const MyApp());
 }
 
@@ -31,7 +33,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
         ),
         // home: const UserRecipes(context),
-        home: const NotesPage(),
+        home: const UserRecipes(),
       ),
     );
   }

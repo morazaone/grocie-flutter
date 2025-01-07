@@ -15,46 +15,43 @@ class RecipeProvider extends ChangeNotifier {
 
     _recipes = (response as List<dynamic>)
         .map((recipeData) => Recipe(
-              id: recipeData['recipe_id'],
+              recipe_id: recipeData['recipe_id'],
               title: recipeData['title'],
-              toPick: recipeData['toPick'] ?? false,
+              to_pick: recipeData['to_pick'] ?? false,
             ))
         .toList();
 
     // Print each recipe individually
     for (var recipe in _recipes) {
       print(
-          'Recipe: ${recipe.id} - ${recipe.title} (To Pick: ${recipe.toPick})');
+          'Recipe: ${recipe.recipe_id} - ${recipe.title} (To Pick: ${recipe.to_pick})');
     }
     notifyListeners();
   }
 
-  void deleteRecipe(Recipe recipe) {
-    _recipes.removeWhere((r) => r.id == recipe.id);
+  Future<void> deleteRecipe(Recipe recipe) async {
+    final supabase = Supabase.instance.client;
+    await supabase.from('recipes').delete().eq('recipe_id', recipe.recipe_id);
+
+    _recipes.removeWhere((r) => r.recipe_id == recipe.recipe_id);
     notifyListeners();
   }
 
-  void addToCart(Recipe recipe) {
-    // Update recipe's toPick status
-    final index = _recipes.indexWhere((r) => r.id == recipe.id);
-    if (index != -1) {
-      _recipes[index] = Recipe(
-        id: recipe.id,
-        title: recipe.title,
-        toPick: true,
-      );
-      notifyListeners();
-    }
-  }
+  Future<void> updateCartStatus(Recipe recipe, bool to_pick) async {
+    final supabase = Supabase.instance.client;
 
-  void removeFromCart(Recipe recipe) {
-    // Similar to addToCart but sets toPick to false
-    final index = _recipes.indexWhere((r) => r.id == recipe.id);
+    // Update in Supabase
+    await supabase
+        .from('recipes')
+        .update({'to_pick': to_pick}).eq('recipe_id', recipe.recipe_id);
+
+    // Update local state
+    final index = _recipes.indexWhere((r) => r.recipe_id == recipe.recipe_id);
     if (index != -1) {
       _recipes[index] = Recipe(
-        id: recipe.id,
+        recipe_id: recipe.recipe_id,
         title: recipe.title,
-        toPick: false,
+        to_pick: to_pick,
       );
       notifyListeners();
     }

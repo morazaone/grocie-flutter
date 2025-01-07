@@ -1,11 +1,11 @@
 class Recipe {
-  final String id;
+  final String recipe_id;
   final String title;
-  final bool toPick;
+  final bool to_pick;
 
   Recipe({
-    required this.id,
+    required this.recipe_id,
     required this.title,
-    this.toPick = false,
+    this.to_pick = false,
   });
 }
