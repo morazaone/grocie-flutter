@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:auth0_flutter/auth0_flutter.dart';
 // import 'services/supabase_service.dart';
 import 'services/auth0_service.dart';
+import 'create_recipe_screen.dart';
 
 /*
 requirement: 
@@ -36,6 +37,9 @@ class _UserRecipesState extends State<UserRecipes> {
       setState(() {
         _isLoggedIn = true;
       });
+      // Fetch recipes after successful login
+      await Provider.of<RecipeProvider>(context, listen: false)
+          .fetchUserRecipes();
     }
   }
 
@@ -44,14 +48,13 @@ class _UserRecipesState extends State<UserRecipes> {
     setState(() {
       _isLoggedIn = false;
     });
+    // set recipes to empty []
+    await Provider.of<RecipeProvider>(context, listen: false).logout();
   }
 
   @override
   void initState() {
     super.initState();
-    // Fetch recipes when widget initializes
-    // Future.microtask(() =>
-    //     Provider.of<RecipeProvider>(context, listen: false).fetchUserRecipes());
   }
 
   @override
@@ -60,61 +63,79 @@ class _UserRecipesState extends State<UserRecipes> {
 // user id: 9b943d73-25a1-43bc-8c3e-59f5635ff865
     return Container(
       color: backgroundColor,
-      child: Column(
-        children: [
-          // Add login button at the top
-          Padding(
-            padding: const EdgeInsets.all(16),
-            child: ElevatedButton(
-              onPressed: _isLoggedIn ? _logout : _login,
-              child: Text(_isLoggedIn ? 'Logout' : 'Login with Auth0'),
-            ),
-          ),
-          // Title section
-          Container(
-            padding: const EdgeInsets.all(16),
-            child: const Text(
-              'My Recipes',
-              style: TextStyle(
-                color: titleColor,
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        floatingActionButton: _isLoggedIn
+            ? FloatingActionButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const CreateRecipeScreen()),
+                  );
+                },
+                backgroundColor: primaryColor,
+                child: const Icon(Icons.add, color: backgroundColor),
+              )
+            : null,
+        body: Column(
+          children: [
+            // Add login button at the top
+            Padding(
+              padding: const EdgeInsets.all(16),
+              child: ElevatedButton(
+                onPressed: _isLoggedIn ? _logout : _login,
+                child: Text(_isLoggedIn ? 'Logout' : 'Login with Auth0'),
               ),
             ),
-          ),
-          // Recipe list
-          Expanded(
-            child: ListView.builder(
-              itemCount: recipes.length,
-              itemBuilder: (context, index) {
-                final recipe = recipes[index];
-                return Dismissible(
-                  key: Key(recipe.recipe_id),
-                  background: Container(
-                    color: destructiveColor,
-                    alignment: Alignment.centerRight,
-                    padding: const EdgeInsets.only(right: 16),
-                    child: const Icon(
-                      Icons.delete,
-                      color: textColor,
+            // Title section - only show when logged in
+            if (_isLoggedIn)
+              Container(
+                padding: const EdgeInsets.all(16),
+                child: const Text(
+                  'My Recipes',
+                  style: TextStyle(
+                    color: titleColor,
+                    fontSize: 24,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ),
+            // Recipe list
+            Expanded(
+              child: ListView.builder(
+                itemCount: recipes.length,
+                itemBuilder: (context, index) {
+                  final recipe = recipes[index];
+                  return Dismissible(
+                    key: Key(recipe.recipe_id),
+                    background: Container(
+                      color: destructiveColor,
+                      alignment: Alignment.centerRight,
+                      padding: const EdgeInsets.only(right: 16),
+                      child: const Icon(
+                        Icons.delete,
+                        color: textColor,
+                      ),
                     ),
-                  ),
-                  direction: DismissDirection.endToStart,
-                  onDismissed: (_) async =>
-                      await Provider.of<RecipeProvider>(context, listen: false)
-                          .deleteRecipe(recipe),
-                  child: RecipeCard(
-                    recipe: recipe,
-                    onCartStatusChanged: (bool to_pick) async =>
-                        await Provider.of<RecipeProvider>(context,
-                                listen: false)
-                            .updateCartStatus(recipe, to_pick),
-                  ),
-                );
-              },
+                    direction: DismissDirection.endToStart,
+                    onDismissed: (_) async => await Provider.of<RecipeProvider>(
+                            context,
+                            listen: false)
+                        .deleteRecipe(recipe),
+                    child: RecipeCard(
+                      recipe: recipe,
+                      onCartStatusChanged: (bool to_pick) async =>
+                          await Provider.of<RecipeProvider>(context,
+                                  listen: false)
+                              .updateCartStatus(recipe, to_pick),
+                    ),
+                  );
+                },
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

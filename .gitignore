@@ -34,8 +34,7 @@ migrate_working_dir/
 /build/
 
 # Supabase
-lib/services/storage_service.dart
-lib/services/supabase_service.dart
+
 
 # Symbolication related
 app.*.symbols

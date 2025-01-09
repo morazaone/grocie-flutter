@@ -56,4 +56,21 @@ class RecipeProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
+
+  Future<void> logout() async {
+    _recipes = [];
+    notifyListeners();
+  }
+
+  Future<void> createRecipe(String title) async {
+    // Add the implementation to create a recipe in your backend
+    // For example:
+    // final response = await _api.createRecipe(title);
+    // final newRecipe = Recipe(
+    //   recipe_id: response['id'],
+    //   title: title,
+    // );
+    // _recipes.add(newRecipe);
+    // notifyListeners();
+  }
 }

@@ -28,31 +28,24 @@ class Auth0Service {
       final auth0JWT = JWT.decode(credentials.accessToken);
       final responseObject = auth0JWT.payload as Map<String, dynamic>;
       final userId = responseObject['sub'].replaceAll('|', '-'); // Convert "
-      print('User ID: ${userId}');
-      print('JWT payload: ${auth0JWT.payload}');
 
       final payload = {
         'userId': userId, // This is the Auth0 user ID (sub claim)
         'exp': DateTime.now().add(Duration(hours: 1)).millisecondsSinceEpoch ~/
             1000,
+        "role": "authenticated"
       };
 
       // // Sign the JWT with Supabase's JWT secret
       final jwt = JWT(payload);
-      print('JWT: ${jwt}');
-
       final supabaseToken = jwt.sign(
-        SecretKey(dotenv.env['SUPABASE_ANON_KEY'] ?? ''),
+        SecretKey(dotenv.env['SUPABASE_JWT_SECRET'] ?? ''),
         algorithm: JWTAlgorithm.HS256,
       );
-      print('Supabase Token: ${supabaseToken}');
-
       // // Initialize Supabase with the new token
       await _supabaseService.initialize(accessToken: supabaseToken);
-      print('Supabase initialized');
       final supabase = Supabase.instance.client;
-      print('Supabase client: ${supabase}');
-      // await supabase.auth.setSession(credentials.accessToken);
+      // await supabase.auth.setSession(supabaseToken);
 
       final response = await supabase
           .from('recipes')
