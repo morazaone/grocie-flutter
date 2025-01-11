@@ -7,6 +7,7 @@ live website: [grocie.solucion.one](https://grocie.solucion.one/)
 
 ## Tech Compatibiliy
 Supabase: Database
+Authentication: Auth0
 
 ## Main Code:
 [/lib](https://github.com/morazaone/grocie-flutter/tree/master/lib)
