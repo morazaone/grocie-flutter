@@ -51,7 +51,8 @@ class Auth0Service {
           .from('recipes')
           .select()
           .eq('author_id', '5c6d2991-ca5f-489c-b229-516ef4efce34');
-      print('Response: ${response}');
+      print('Response: $response');
+
       _recipes = (response as List<dynamic>)
           .map((recipeData) => Recipe(
                 recipe_id: recipeData['recipe_id'],
@@ -59,7 +60,7 @@ class Auth0Service {
                 to_pick: recipeData['to_pick'] ?? false,
               ))
           .toList();
-      print('Recipes: ${_recipes}');
+      print('Recipes: $_recipes');
 
       // Print each recipe individually
       for (var recipe in _recipes) {

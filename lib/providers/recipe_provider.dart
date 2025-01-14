@@ -37,13 +37,13 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> updateCartStatus(Recipe recipe, bool to_pick) async {
+  Future<void> updateCartStatus(Recipe recipe, bool toPick) async {
     final supabase = Supabase.instance.client;
 
     // Update in Supabase
     await supabase
         .from('recipes')
-        .update({'to_pick': to_pick}).eq('recipe_id', recipe.recipe_id);
+        .update({'to_pick': toPick}).eq('recipe_id', recipe.recipe_id);
 
     // Update local state
     final index = _recipes.indexWhere((r) => r.recipe_id == recipe.recipe_id);
@@ -51,7 +51,7 @@ class RecipeProvider extends ChangeNotifier {
       _recipes[index] = Recipe(
         recipe_id: recipe.recipe_id,
         title: recipe.title,
-        to_pick: to_pick,
+        to_pick: toPick,
       );
       notifyListeners();
     }
@@ -62,15 +62,35 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> createRecipe(String title) async {
-    // Add the implementation to create a recipe in your backend
-    // For example:
-    // final response = await _api.createRecipe(title);
-    // final newRecipe = Recipe(
-    //   recipe_id: response['id'],
-    //   title: title,
-    // );
-    // _recipes.add(newRecipe);
-    // notifyListeners();
+  Future<void> createRecipe({
+    required String title,
+    required double budget,
+    required String categories,
+    required List<Map<String, String>> ingredients,
+    required List<Map<String, String>> steps,
+    required bool isPublic,
+  }) async {
+    final supabase = Supabase.instance.client;
+    final response = await supabase
+        .from('recipes')
+        .insert({
+          'title': title,
+          'budget': budget,
+          'categories': categories,
+          'ingredients':
+              ingredients, // Will be automatically converted to JSONB
+          'steps': steps, // Will be automatically converted to JSONB
+          'is_public': isPublic,
+          'author_id': '582e25d5-e022-4729-8052-39d598291f00',
+        })
+        .select()
+        .single();
+
+    _recipes.add(Recipe(
+      recipe_id: response['recipe_id'],
+      title: title,
+      // Update your Recipe model to include these new fields
+    ));
+    notifyListeners();
   }
 }

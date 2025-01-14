@@ -1,15 +1,15 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
-/***
- * 
- * 
- * 
- * Not using it yet
- * 
- * 
- * 
- * 
- * */
+/// *
+///
+///
+///
+/// Not using it yet
+///
+///
+///
+///
+///
 class StorageService {
   final FlutterSecureStorage _storage = const FlutterSecureStorage();
 

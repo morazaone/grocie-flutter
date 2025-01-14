@@ -21,7 +21,7 @@ methods:
 */
 
 class UserRecipes extends StatefulWidget {
-  const UserRecipes({Key? key}) : super(key: key);
+  const UserRecipes({super.key});
 
   @override
   State<UserRecipes> createState() => _UserRecipesState();
@@ -125,10 +125,10 @@ class _UserRecipesState extends State<UserRecipes> {
                         .deleteRecipe(recipe),
                     child: RecipeCard(
                       recipe: recipe,
-                      onCartStatusChanged: (bool to_pick) async =>
+                      onCartStatusChanged: (bool toPick) async =>
                           await Provider.of<RecipeProvider>(context,
                                   listen: false)
-                              .updateCartStatus(recipe, to_pick),
+                              .updateCartStatus(recipe, toPick),
                     ),
                   );
                 },
@@ -146,10 +146,10 @@ class RecipeCard extends StatelessWidget {
   final Function(bool) onCartStatusChanged;
 
   const RecipeCard({
-    Key? key,
+    super.key,
     required this.recipe,
     required this.onCartStatusChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
